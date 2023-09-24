@@ -2,7 +2,7 @@
 
 This repository is contain Go code and scripts to start and stop instances.
 The purpose is for schedule start and stop EC2 instances to reduce cost of usage.
-To start and stop instances have so many options but for this will have 2 options: one is aws-cli and other one is Go code.
+To start and stop instances have so many options exmaple aws-cli and lambda function
 
 ## Option 1: aws-cli
 
@@ -37,14 +37,6 @@ aws ec2 start-instances \
 
 can put flag `--dry-run` to check permission without make request. [ec2 cli options](https://docs.aws.amazon.com/cli/latest/reference/ec2/start-instances.html#options)
 
-## Option 2: Go sdk
+## Option 2: lambda function
 
-[Managing Amazon EC2 Instances](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/ec2-example-manage-instances.html)
-
-For Go SDK you can run
-
-```sh
-go run main.go <state> <instance_id>
-```
-
-for `state` option is can be `START` and `STOP` only.
+Can use lambda function with event bridge to schedule control EC2 instance
