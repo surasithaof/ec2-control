@@ -1,45 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/kelseyhightower/envconfig"
 )
 
-// Usage:
-// go run main.go <state> <instance id>
-//   - state can either be START or STOP
-func main() {
-	var awsCfg Config
-	envconfig.MustProcess("AWS", &awsCfg)
-
-	// Load session from shared config
-	sess := session.Must(session.NewSession(&aws.Config{
-		Region:      aws.String(awsCfg.Region),
-		Credentials: credentials.NewStaticCredentials(awsCfg.AccessKeyID, awsCfg.SeceretKey, awsCfg.SessionToken),
-	}))
-
-	// Create new EC2 client
-	svc := ec2.New(sess)
-
-	instanceID := os.Args[2]
-
-	if os.Args[1] == "START" {
-		// Turn monitoring on
-		startInstance(svc, instanceID)
-	} else if os.Args[1] == "STOP" {
-		// Turn instances off
-		stopInstance(svc, instanceID)
-	}
-}
-
-func startInstance(svc *ec2.EC2, instanceID string) {
+func startInstance(svc *ec2.EC2, instanceID string) error {
 	// We set DryRun to true to check to see if the instance exists and we have the
 	// necessary permissions to monitor the instance.
 	input := &ec2.StartInstancesInput{
@@ -58,16 +27,19 @@ func startInstance(svc *ec2.EC2, instanceID string) {
 		input.DryRun = aws.Bool(false)
 		result, err := svc.StartInstances(input)
 		if err != nil {
-			fmt.Println("Error", err)
+			log.Println("Error", err)
+			return err
 		} else {
-			fmt.Println("Success", result.StartingInstances)
+			log.Println("Success", result.StartingInstances)
+			return nil
 		}
 	} else { // This could be due to a lack of permissions
-		fmt.Println("Error", err)
+		log.Println("Error", err)
+		return err
 	}
 }
 
-func stopInstance(svc *ec2.EC2, instanceID string) {
+func stopInstance(svc *ec2.EC2, instanceID string) error {
 	input := &ec2.StopInstancesInput{
 		InstanceIds: []*string{
 			aws.String(instanceID),
@@ -80,11 +52,14 @@ func stopInstance(svc *ec2.EC2, instanceID string) {
 		input.DryRun = aws.Bool(false)
 		result, err := svc.StopInstances(input)
 		if err != nil {
-			fmt.Println("Error", err)
+			log.Println("Error", err)
+			return err
 		} else {
-			fmt.Println("Success", result.StoppingInstances)
+			log.Println("Success", result.StoppingInstances)
+			return nil
 		}
 	} else {
-		fmt.Println("Error", err)
+		log.Println("Error", err)
+		return err
 	}
 }
