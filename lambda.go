@@ -14,8 +14,8 @@ import (
 )
 
 type Event struct {
-	State      string `json:"state"` // start, stop
-	InstanceID string `json:"instanceID"`
+	State       string   `json:"state"` // start, stop
+	InstanceIDs []string `json:"instanceIds"`
 }
 
 func HandleRequest(ctx context.Context, event Event) (string, error) {
@@ -33,13 +33,13 @@ func HandleRequest(ctx context.Context, event Event) (string, error) {
 
 	switch event.State {
 	case "start":
-		err := startInstance(svc, event.InstanceID)
+		err := startInstance(svc, event.InstanceIDs)
 		if err != nil {
 			return "stop error", err
 		}
 		return "start success", nil
 	case "stop":
-		err := stopInstance(svc, event.InstanceID)
+		err := stopInstance(svc, event.InstanceIDs)
 		if err != nil {
 			return "stop error", err
 		}
