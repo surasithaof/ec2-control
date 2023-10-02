@@ -1,7 +1,7 @@
 # EC2 Control
 
 This repository contains Go code and scripts to start and stop instances.
-The purpose is to schedule the start and stop of EC2 instances to reduce the cost of usage. 
+The purpose is to schedule the start and stop of EC2 instances to reduce the cost of usage.
 To start and stop instances, there are so many options, such as aws-cli and lambda functions.
 
 ## Option 1: aws-cli
@@ -76,4 +76,19 @@ You can use the lambda function with the EventBridge to schedule the control of 
 4. Upload a binary zip file.
 5. Runtime settings: set handler file name to build file example `main`.
 6. Run test start and stop instances.
-7. You can use EventBridge to trigger functions for schedule start and stop instances.
+   example payload
+
+   ```json
+   {
+     "state": "start",
+     "instanceIds": [
+       "i-0XXXXX"
+     ]
+   }
+   ```
+   
+8. Add EventBridge as a function trigger or create the EventBridge schedule from the EventBridge console.
+9. Set cron-based schedules; from my example, I will set up two schedules, one for the start instance at 8:00 a.m. and the other for the stop instance at 8:00 p.m. every day.
+10. Select target as the AWS Lambda.
+11. Select the function to control instances and put a payload for start or stop instances, like when you test the functions.
+12. Finish!
