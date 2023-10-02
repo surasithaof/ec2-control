@@ -1,8 +1,8 @@
 # EC2 Control
 
-This repository is contain Go code and scripts to start and stop instances.
-The purpose is for schedule start and stop EC2 instances to reduce cost of usage.
-To start and stop instances have so many options exmaple aws-cli and lambda function.
+This repository contains Go code and scripts to start and stop instances.
+The purpose is to schedule the start and stop of EC2 instances to reduce the cost of usage. 
+To start and stop instances, there are so many options, such as aws-cli and lambda functions.
 
 ## Option 1: aws-cli
 
@@ -35,11 +35,11 @@ aws ec2 start-instances \
 --instance-ids $INSTANCE_ID
 ```
 
-can put flag `--dry-run` to check permission without make request. [ec2 cli options](https://docs.aws.amazon.com/cli/latest/reference/ec2/start-instances.html#options).
+can put flag `--dry-run` to check permission without making a request. [ec2 cli options](https://docs.aws.amazon.com/cli/latest/reference/ec2/start-instances.html#options).
 
 ## Option 2: lambda function
 
-Can use lambda function with event bridge to schedule control EC2 instance.
+You can use the lambda function with the EventBridge to schedule the control of the EC2 instances.
 
 1. Create an IAM policy and IAM role for your Lambda function.
 
@@ -65,15 +65,15 @@ Can use lambda function with event bridge to schedule control EC2 instance.
    }
    ```
 
-2. Build binary file follow the instructions of [aws-lambda-go](https://github.com/aws/aws-lambda-go).
+2. Build a binary file by following the instructions of [aws-lambda-go](https://github.com/aws/aws-lambda-go).
 
    ```sh
    GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main *.go
    zip main.zip main
    ```
 
-3. Create AWS lambda function with granted role.
-4. upload binary zip file.
-5. Runtime settings, set handler file name to build file example `main`.
+3. Create an AWS lambda function with the granted role.
+4. Upload a binary zip file.
+5. Runtime settings: set handler file name to build file example `main`.
 6. Run test start and stop instances.
-7. Can use EventBridge to trigger function for schdule start and stop instances.
+7. You can use EventBridge to trigger functions for schedule start and stop instances.
